@@ -1,0 +1,106 @@
+1. SELECT uchastie.id_n, sobaki.id_s, sobaki.name_s, vystavki.id_vis, vystavki.name_vis;
+FROM uchastie, sobaki, vystavki INTO CURSOR tmp;
+WHERE uchastie.id_s = sobaki.id_s AND uchastie.id_vis = vystavki.id_vis
+SELECT tmp.id_s, tmp.name_s;
+FROM tmp ;
+WHERE tmp.id_s NOT IN (SELECT tmp.id_s FROM tmp WHERE tmp.id_vis  IN (2)) GROUP BY tmp.name_s, tmp.id_s
+
+
+
+1. SELECT DISTINCT sobaki.id_s, sobaki.name_s;
+FROM sobaki, uchastie;
+WHERE (sobaki.id_s = uchastie.id_s AND sobaki.id_s  NOT IN;
+(SELECT sobaki.id_s FROM sobaki JOIN uchastie ON (sobaki.id_s = uchastie.id_s AND uchastie.id_vis = 2)))
+
+
+
+2. SELECT sobaki.id_s, sobaki.name_s, vladeltsy.id_v, vladeltsy.name_v;
+FROM sobaki, vladeltsy INTO CURSOR tmp;
+WHERE sobaki.id_v = vladeltsy.id_v
+Select a.id_s, b.id_s, a.id_v From tmp a, tmp b;
+Where a.id_v=b.id_v AND a.id_s < b.id_s
+
+
+
+3. SELECT vladeltsy.id_v, vladeltsy.name_v, sobaki.id_s, sobaki.name_s;
+FROM vladeltsy, sobaki INTO CURSOR tmp;
+WHERE sobaki.id_v = vladeltsy.id_v
+SELECT t.gg as id_vladeltsa FROM (SELECT  tmp.id_v as gg, COUNT (tmp.id_v) AS cc FROM tmp GROUP BY tmp.id_v) t;
+WHERE t.cc = (SELECT MAX(t.cc) FROM (SELECT  tmp.id_v, COUNT (tmp.id_v) AS cc FROM tmp GROUP BY tmp.id_v) t)
+
+
+
+3.
+SELECT TOP 1 vladeltsy.name_v ;
+FROM (SELECT sobaki.id_v, COUNT(sobaki.id_v) AS c FROM sobaki GROUP BY sobaki.id_v) as t ;
+WHERE vladeltsy.id_v = t.id_v ;
+ORDER BY t.c DESC
+
+
+
+3. самый краткий
+SELECT TOP 1 t.id_v,t.c;
+FROM (SELECT sobaki.id_v, COUNT(sobaki.id_v) AS c FROM sobaki GROUP BY sobaki.id_v) as t;
+order by t.c desc
+
+
+
+4. SELECT t.nomer_vis FROM (SELECT uchastie.id_vis as nomer_vis, COUNT(uchastie.id_s) as kolvo FROM uchastie GROUP BY uchastie.id_vis) t;
+WHERE t.kolvo > 
+SELECT SUM(suma)/2 FROM (SELECT COUNT (sobaki.id_s) as suma FROM sobaki GROUP BY sobaki.id_s) X
+
+
+
+4.
+SELECT vladeltsy.id_v, vladeltsy.name_v, sobaki.id_s, sobaki.name_s;
+FROM vladeltsy, sobaki INTO CURSOR tmp;
+WHERE sobaki.id_v = vladeltsy.id_v
+
+SELECT MAX(t.cc) FROM (SELECT  tmp.id_v, COUNT (tmp.id_v) AS cc FROM tmp GROUP BY tmp.id_v) t;
+SELECT count(uchastie.id_vis) AS c, vystavki.name_vis FROM uchastie, sobaki, vystavki INTO CURSOR t;
+WHERE sobaki.id_s = uchastie.id_s AND uchastie.id_vis = vystavki.id_vis;
+GROUP BY vystavki.name_vis
+
+SELECT AVG(t.c) AS aver FROM t INTO CURSOR t2
+
+SELECT t.name_vis FROM t, t2 WHERE t.c > t2.aver
+
+
+
+5.
+SELECT TOP 6 vladeltsy.name_v ;
+FROM (SELECT sobaki.id_v, COUNT(sobaki.id_v) AS c FROM sobaki, vladeltsy ;
+GROUP BY sobaki.id_v WHERE sobaki.id_v = vladeltsy.id_v AND sobaki.id_p == 2) as t, vladeltsy ;
+WHERE vladeltsy.id_v = t.id_v ;
+ORDER BY t.c DESC
+
+
+
+6.
+SELECT DISTINCT porody.name_p FROM porody ;
+JOIN sobaki ON sobaki.id_p = porody.id_p ;
+JOIN uchastie ON uchastie.id_s = sobaki.id_s AND uchastie.id_vis = 3
+
+
+
+7.UPDATE exams
+SET METREQ = 	(SELECT * FROM (	SELECT IF (	(SELECT Count(PASS_FAIL) FROM exams WHERE PERIOD_ID = 1 and PASS_FAIL = 1) > 0, 
+							 1, 
+							 0)	) 		
+		AS t1)
+WHERE PERIOD_ID = 1;
+----------------------------------------
+
+
+8.select name, CASE WHEN (monthlymaintenance > 100) THEN 'expensive'
+WHEN (monthlymaintenance < 101) THEN 'cheap'  END
+from cd.facilities
+
+9.select surname from cd.member
+where surname is UNIQUE
+
+10.select surname from cd.members        # первые десять уникальных фамилий в алфавитном поядке
+GROUP BY surname
+ORDER BY surname ASC limit 10
+
+
